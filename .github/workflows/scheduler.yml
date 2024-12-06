@@ -1,0 +1,11 @@
+name: Scrape every 2 minutes
+on:
+  schedule:
+    - cron: "*/2 * * * *"
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run script
+        run: python3 scraping/scraping-job.py
