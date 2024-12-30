@@ -2,7 +2,7 @@
 
 #### LARTIGAU Théo et SIAHAAN--GENSOLLEN Rémy
 
-Tout le monde ou presque s'est déjà retrouvé confronté à des incidents  dans les transports en commun : un jour, alors
+Tout le monde ou presque s'est déjà retrouvé confronté à des incidents dans les transports en commun : un jour, alors
 qu'on se rend à un rendez-vous important, notre train est soudainement bloqué, ou il est en retard, ou ne vient juste 
 pas. On n'a parfois qu'une annonce simple, une alerte de trafic qui ressemble peu ou proue à ça :
 
@@ -158,7 +158,7 @@ nos données brutes. Au final, nous avons :
 
 Le Pré-traitement pouvant être long, en particulier sur CPU, nous avons enregistré ces jeux de données dans le dossier
 `src/data`, au format _feather_. Ce format était idéal pour nous, car bien moins volumineux que le CSV (notamment du fait
-de la précense de messsages en texte plein, qui alourdissaient considérablement les fichiers si non stockés en binaire),
+de la présence de messages en texte plein, qui alourdissaient considérablement les fichiers si non stockés en binaire),
 et sur lesquels ils nous étaient plus rapide d'itérer qu'avec _parquet_.
 
 <a name="data-analysis"></a>
@@ -190,6 +190,7 @@ de l'API IDF Mobilités pour leur signaler le problème.
 Une solution naïve pour augmenter notre jeu de données est de déterminer le type de la perturbation en fonction de la 
 présence de mots-clés soigneusement choisis à l'intérieur du message d'info-traffic lié, mais celle-ci n'a pas été
 efficace.
+
 Enfin, à l'aide d'une version de [CamemBERT](dangvantuan/sentence-camembert-base) (sélectionné car entraîné sur un corpus 
-de textes francophones) finetunée pour produire des embeddings de phrases, et de la librairie 
+de textes francophones) finitude pour produire des embeddings de phrases, et de la librairie 
 [KeyBERT](https://maartengr.github.io/KeyBERT/), nous avons essayé d'augmenter les données sans grand succès.
