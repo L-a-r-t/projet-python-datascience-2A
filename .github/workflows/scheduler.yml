@@ -14,7 +14,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run script
-        run: python3 scraping/scraping-job.py
+        run: python3 src/scraping-job.py
         env:
           IDFM_API_KEY: ${{ secrets.IDFM_API_KEY }}
+          MINIO_S3_ENDPOINT: ${{ secrets.MINIO_S3_ENDPOINT }}
+          MINIO_ROOT: ${{ secrets.MINIO_ROOT }}
+          MINIO_KEY: ${{ secrets.MINIO_KEY }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
