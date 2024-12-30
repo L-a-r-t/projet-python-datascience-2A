@@ -14,7 +14,8 @@ Comme le montre cet exemple, ces messages ne sont parfois pas d'une grande aide.
 de l'incident peut s'avérer utile, voire très utile, ne serait-ce que pour prévenir du retard, ou mieux planifier
 un trajet alternatif. Dans ce projet, on se propose d'entraîner un modèle sur les données fournies par l'API d'IDF
 Mobilités sur les perturbations du réseau francilien, contenant notamment les messages et les durées, afin d'essayer
-de répondre à ce problème.
+de répondre à ce problème. Nous analyserons également ces données de sorte à mieux comprendre la nature des
+perturbations sur le réseaux de transports en commun d'Île de France.
 
 Ce fichier détaille notre démarche et les résultats obtenus, ainsi que des considérations pratiques vis-à-vis du projet
 (fonctionnement, reproductibilité…).
@@ -97,7 +98,7 @@ référer à la [documentation RAPIDS](https://docs.rapids.ai/install/). Une cel
 disponible dans chaque notebook. 
 
 <a name="struct"></a>
-### Démarche
+## Démarche
 
 <a name="scraping"></a>
 #### Scraping de l'API IDF Mobilités
@@ -128,7 +129,7 @@ tourner sois-même un worker (ou la tâche CRON directement), mais nous ne dispo
 **Nous avons fait tourner le script de scraping du 6 décembre 2024 à 13h50, jusqu'au 29 décembre à 20h56.**
 
 <a name="preprocessing"></a>
-#### Pré-traitement des données
+#### Pré-traitement des données `preprocessing.ipynb`
 
 Les données issues du scraping de l'API IDF Mobilités ne constituent pas un jeu de données en tant que tel. L'on a donc 
 cherché à transformer ces données brutes, stockées sur le SSP Cloud, en un jeu de données exploitable. Les fichiers
@@ -160,3 +161,35 @@ Le Pré-traitement pouvant être long, en particulier sur CPU, nous avons enregi
 de la précense de messsages en texte plein, qui alourdissaient considérablement les fichiers si non stockés en binaire),
 et sur lesquels ils nous étaient plus rapide d'itérer qu'avec _parquet_.
 
+<a name="data-analysis"></a>
+#### Analyse des données `analysis.ipynb`
+
+Nous cherchons à atteindre plusieurs objectifs via l'analyse des données, ils sont l'identification :
+1. Des lignes et des tronçons les plus problématiques sur le réseau IDF Mobilités
+2. Des types de perturbations les plus fréquentes
+3. De potentiels problèmes dans la restitution des données par l'API IDF Mobilités
+
+Parmi les objets impactés, nous avons pu récupérer l'ensemble des lignes de de métro, de RER et la quasi-totalité des 
+lignes de Tramway francilien sur la période de scraping. Nous avons aussi récupéré la moitié des lignes de Transilien et 
+les deux-tiers lignes de bus du réseau.
+
+L'analyse des données sur les incidents nous a permis de constater qu'hormis les informations sur la temporalité 
+d'une perturbation, la quasi-totalité des informations la concernant sont contenues dans le message d'information 
+associé à celle-ci. Le traitement du langage naturel est donc apparu comme étant une solution pour augmenter le jeu 
+de données, surtout si nous souhaitons identifier les _types_ de perturbations les plus fréquentes. L'API IDF Mobilités 
+ne précise que si une perturbation est due à des travaux, et ce de façon non systématique.
+
+Néanmoins, nous n'avons pas réussi à identifier les lignes les plus problématiques du réseau de transports. Nous avons
+en effet fini par constater que l'API IDF Mobilités renvoyait parfois des perturbations à l'identique des dizaines de
+fois et avec des identifiants uniques différents, ce qui rend toute déduplication impossible sans faire appel à des
+grands modèles de langage (LLMs) très énergivores. 
+
+Cela veut néanmoins dire que nous avons atteint notre troisième objectif. Nous avons donc contacté l'équipe en charge
+de l'API IDF Mobilités pour leur signaler le problème.
+
+Une solution naïve pour augmenter notre jeu de données est de déterminer le type de la perturbation en fonction de la 
+présence de mots-clés soigneusement choisis à l'intérieur du message d'info-traffic lié, mais celle-ci n'a pas été
+efficace.
+Enfin, à l'aide d'une version de [CamemBERT](dangvantuan/sentence-camembert-base) (sélectionné car entraîné sur un corpus 
+de textes francophones) finetunée pour produire des embeddings de phrases, et de la librairie 
+[KeyBERT](https://maartengr.github.io/KeyBERT/), nous avons essayé d'augmenter les données sans grand succès.
