@@ -1,5 +1,6 @@
 name: Scrape every 2 minutes
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/2 * * * *"
 jobs:
