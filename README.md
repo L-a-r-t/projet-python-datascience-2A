@@ -179,6 +179,15 @@ associé à celle-ci. Le traitement du langage naturel est donc apparu comme ét
 de données, surtout si nous souhaitons identifier les _types_ de perturbations les plus fréquentes. L'API IDF Mobilités 
 ne précise que si une perturbation est due à des travaux, et ce de façon non systématique.
 
+Notre analyse de la durée des perturbations, importante car il s'agit de la variable que nous cherchons à prédire, nous
+a amenés à observer une distribution non-usuelle. Nos observations sont détaillées dans le notebook.
+
+![Histogramme de la répartition des durées des perturbations de moins d'un jour. On remarque une concentration dans
+les durées inférieures à 12 heures avec un grand pic dans les durées inférieures à une heure.](images/hist_duration_24h.png)
+
+![Histogramme de la répartition des durées des perturbations de moins d'une heure. Les durées sont concentrées quasi
+intégralement autour de 24 minutes et à moins de 2 minutes.](images/hist_duration_1h.png)
+
 Néanmoins, nous n'avons pas réussi à identifier les lignes les plus problématiques du réseau de transports. Nous avons
 en effet fini par constater que l'API IDF Mobilités renvoyait parfois des perturbations à l'identique des dizaines de
 fois et avec des identifiants uniques différents, ce qui rend toute déduplication impossible sans faire appel à des
